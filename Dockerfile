@@ -6,23 +6,14 @@
 #   docker run -t -i -p 8080:8080 sample/vertx-java-fat
 ###
 
-FROM java:8-jre
+FROM java:openjdk-8-jdk
 
-ENV CONF_FILE default-conf.json
-ENV VERTICLE_FILE vertx-forge-main-1.0.0-SNAPSHOT-fat.jar
-ENV DEPENDENCIES_FILE dependencies.json
+ENV CONF_FILE vertx-forge-main/conf/default-conf.json
+ENV VERTICLE_FILE vertx-forge-main/target/vertx-forge-main-1.0.0-SNAPSHOT-fat.jar
 
-# Set the location of the verticles
-ENV VERTICLE_HOME /usr/verticles
-
+COPY . .
+RUN ./mvnw clean package
 EXPOSE 8080
 
-# Copy your fat jar to the container
-COPY vertx-forge-main/target/$VERTICLE_FILE $VERTICLE_HOME/
-COPY vertx-forge-main/conf/$CONF_FILE $VERTICLE_HOME/
-COPY $DEPENDENCIES_FILE $VERTICLE_HOME/
-
-# Launch the verticle
-WORKDIR $VERTICLE_HOME
 ENTRYPOINT ["sh", "-c"]
 CMD ["exec java -jar -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory $VERTICLE_FILE -conf $CONF_FILE"]
