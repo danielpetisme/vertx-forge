@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-mvn clean package; \
-java \
--Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory \
--jar \
-vertx-forge-main/target/vertx-forge-main-*-fat.jar \
--conf \
-vertx-forge-main/conf/default-conf.json
 
+java_opts="-Dvertx.logger-delegate-factory-class-name=\"io.vertx.core.logging.SLF4JLogDelegateFactory\""
+jar_name="vertx-forge-main/target/vertx-forge-main-1.0.0-SNAPSHOT-fat.jar"
+vertx_opts="-conf vertx-forge-main/conf/default-conf.json"
 
+mvn clean package && \
+mvn exec:exec -Dexec.executable="java" -Dexec.args="${java_opts} -jar ${jar_name} ${vertx_opts}"
