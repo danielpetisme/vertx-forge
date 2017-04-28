@@ -5,9 +5,6 @@
     },
     "deploy": {
         "goal": "exec:exec -Dexec.executable=\"java\" -Dexec.args=\"-Dvertx.logger-delegate-factory-class-name=\"io.vertx.core.logging.SLF4JLogDelegateFactory\" -jar vertx-forge-main/target/vertx-forge-main-1.0.0-SNAPSHOT-fat.jar -conf vertx-forge-main/conf/default-conf.json"
-    },
-    "hooks": {
-        "postDeploy": "<string>"
     }
 }
 
