@@ -49,8 +49,8 @@ angular
 
     return service;
 }])
-.controller('VertxForgeController', ['$window','hotkeys', 'Version', 'Dependency', 'Forge',
-function VertxForgeController($window, hotkeys, Version, Dependency, Forge) {
+.controller('VertxForgeController', ['$document', '$window','hotkeys', 'Version', 'Dependency', 'Forge',
+function VertxForgeController($document, $window, hotkeys, Version, Dependency, Forge) {
     var vm = this;
 
     vm.versions= [];
@@ -80,6 +80,10 @@ function VertxForgeController($window, hotkeys, Version, Dependency, Forge) {
         }
     });
     vm.hotkey = (bowser.mac) ? '\u2318 + \u23CE' : 'alt + \u23CE';
+
+    try {
+        vm.isFileSaverSupported = !!new Blob;
+    } catch (e) {}
 
     function loadAll() {
         getVersions();
@@ -139,15 +143,10 @@ function VertxForgeController($window, hotkeys, Version, Dependency, Forge) {
     }
 
     function save(data) {
-        var url = $window.URL || $window.webkitURL;
-        var archive = new Blob([data], {'type':"application/zip"});
-
-        var downloadUrl = url.createObjectURL(archive);
-        var a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = vm.project.artifactId + '.zip';
-        a.target = '_blank';
-        a.click();
+        if(vm.isFileSaverSupported) {
+            var archive = new Blob([data], {type: 'application/octet-stream'});
+            saveAs(archive, vm.project.artifactId + '.zip');
+        }
     }
 
 
